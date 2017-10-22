@@ -3,11 +3,15 @@
 REGISTER '/home/acadgild/Desktop/project1/piggybank.jar';
 data = Load '/home/acadgild/Desktop/project1/Crimes_-_2001_to_present.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',') as (ID:int, Case_Number:chararray, Date:chararray, Block:chararray, IUCR:chararray, Primary_Type:chararray, Description:chararray, Location_Description:chararray, Arrest:boolean, Domestic:boolean,Beat:chararray, District:chararray, Ward:chararray, Community_Area:chararray,FBICode:chararray, X_Coordinate:chararray, Y_Coordinate:chararray, Year:chararray, Updated_On:chararray, Latitude:double, Longitude:double, Location:tuple(t1:double, t2:double));
 
+-----------------------------------------------------------------------
 -- task-1)
 
 grouped_data = group data by FBICode;
 no_of_case = foreach grouped_data generate FLATTEN(group), COUNT(data.$1);
 dump no_of_case;
+
+
+-------------------------------------------------------------------------
 
 -- task-2)
 
@@ -15,6 +19,9 @@ filtered_data =FILTER data by Ward == '32';
 grouped_data = group filtered_data all;
 cases_under_32 = foreach grouped_data Generate COUNT(filtered_data.ID);
 dump cases_under_32;
+
+
+-------------------------------------------------------------------------
 
 -- task-3)
 
@@ -24,6 +31,7 @@ arrest_count = foreach grouped generate group,COUNT(filter_data.ID);
 dump arrest_count;
 
 
+-------------------------------------------------------------------------
 
 -- task-4)
 filter_Arrest = FILTER data by Arrest == TRUE;
@@ -31,6 +39,9 @@ get_date = foreach filter_Arrest GENERATE ID .. Location, SUBSTRING(Date,0,2) AS
 filter_date = FILTER get_date BY ((year=='2014') AND ((month=='10') OR (month=='11') OR (month=='12')))  OR ((year == '2015') AND ((month == '01') OR (month == '02') OR (month == '03') OR (month == '04') OR (month == '05') OR (month == '06') OR (month == '07') OR (month == '08') OR (month == '09') OR (month == '10'))); 
 count_date = FOREACH (GROUP filter_date ALL) GENERATE COUNT(filter_date);
 dump count_date ;
+
+
+--------------------------------------------------------------------------
 
 
 
